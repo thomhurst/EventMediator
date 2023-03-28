@@ -21,7 +21,7 @@ public interface IMyEvents
 }
 ```
 
-2.  Create a partial class for your Subscriber, with an [EventSubscriber<TEventInterface>] attribute, where `TEventInterface` is the interface you created in step 1
+2.  Create a partial class for your Subscriber, with an [EventSubscriber < TEventInterface >] attribute, where `TEventInterface` is the interface you created in step 1
 
 ```csharp
 [EventSubscriber<IMyEvents>]
