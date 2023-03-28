@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TomLonghurst.Eventing.Mediator", "TomLonghurst.Eventing.Mediator\TomLonghurst.Eventing.Mediator.csproj", "{221B0E0A-F78D-4B55-8626-A172FF6BE69B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TomLonghurst.Eventing.Mediator.Tests", "TomLonghurst.Eventing.Mediator.Tests\TomLonghurst.Eventing.Mediator.Tests.csproj", "{CBEDBDA9-42D4-48D6-B4D3-C97EF1230E18}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{221B0E0A-F78D-4B55-8626-A172FF6BE69B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{221B0E0A-F78D-4B55-8626-A172FF6BE69B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{221B0E0A-F78D-4B55-8626-A172FF6BE69B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{221B0E0A-F78D-4B55-8626-A172FF6BE69B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBEDBDA9-42D4-48D6-B4D3-C97EF1230E18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBEDBDA9-42D4-48D6-B4D3-C97EF1230E18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBEDBDA9-42D4-48D6-B4D3-C97EF1230E18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBEDBDA9-42D4-48D6-B4D3-C97EF1230E18}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
