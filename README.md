@@ -2,6 +2,11 @@
 
 A mediator for eventing - Publish a message and it'll make sure all your subscribers get it
 
+Install via Nuget
+`Install-Package TomLonghurst.Eventing.Mediator`
+
+## Usage
+
 1.  Create an interface, defining methods that represent events, and add the [EventMediator] attribute
 
 ```csharp
