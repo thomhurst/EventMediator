@@ -45,7 +45,7 @@ public partial class MySubscriber
 }
 ```
 
-4.  (Optional) - Repeat Step 3 for as many subscribers as you want.
+4.  (Optional) - Repeat Steps 2 + 3 for as many subscribers as you want.
 
 5.  Hook it all up to your ServiceCollection, and enjoy. Simply inject in your interface from Step 1 when you want to publish an event, and this'll take care of the rest.
 
