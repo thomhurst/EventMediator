@@ -1,6 +1,7 @@
 # Event Mediator
 
 A mediator for eventing - Source Generated publishers from your interfaces 
+
 Publish a message and it'll make sure all your subscribers get it
 
 This uses source code generation to build publishers for you based off of an interface.
