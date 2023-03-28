@@ -28,7 +28,7 @@ public interface IMyEvents
 public partial class MySubscriber { }
 ```
 
-3.  You'll be required by the compiler to implement a `Subscribe` method. Here you'll be passed a list of `event` hooks that you can choose to opt into or not. Your subscriber may care about all or some. You choose.
+3.  You'll be required by the compiler to implement a `Subscribe` method. Here you'll be passed an object containing `event` hooks that you can choose to opt into or not. Your subscriber may care about all or some. You choose.
     You can inject in any dependencies you want, to this class. The freedom is yours.
 
 ```csharp
