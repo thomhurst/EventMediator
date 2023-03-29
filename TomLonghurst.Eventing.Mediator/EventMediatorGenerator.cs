@@ -6,7 +6,7 @@ using TomLonghurst.Eventing.Mediator.SourceGenerator.Helpers;
 
 namespace TomLonghurst.Eventing.Mediator;
 
-public class EventMediatorGenerator
+public static class EventMediatorGenerator
 {
     internal static bool IsEventMediator(
         SyntaxNode syntaxNode,
