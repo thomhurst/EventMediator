@@ -59,6 +59,11 @@ public class EventSubscriberGenerator
 
             var code = GenerateEventSubscriberCode(type);
             
+            if (string.IsNullOrEmpty(code))
+            {
+                return;
+            }
+            
             var typeNamespace = type.ContainingNamespace.IsGlobalNamespace
                 ? null
                 : $"{type.ContainingNamespace}.";

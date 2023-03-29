@@ -52,7 +52,12 @@ public class EventMediatorGenerator
                 continue;
             }
             
-            var code = GenerateEventMediatorCode(type);
+            var code = GenerateEventMediatorCode(context, type);
+
+            if (string.IsNullOrEmpty(code))
+            {
+                return;
+            }
             
             var typeNamespace = type.ContainingNamespace.IsGlobalNamespace
                 ? null
@@ -62,7 +67,8 @@ public class EventMediatorGenerator
         }
     }
     
-    private static string GenerateEventMediatorCode(ITypeSymbol typeSymbol)
+    private static string? GenerateEventMediatorCode(SourceProductionContext context,
+        ITypeSymbol typeSymbol)
     {
         var ns = typeSymbol.ContainingNamespace.IsGlobalNamespace
             ? null
@@ -93,7 +99,13 @@ public class EventMediatorGenerator
         codeWriter.WriteLine("{");
 
         var methodsInInterface = typeSymbol.GetMembers().OfType<IMethodSymbol>().ToList();
-        
+
+
+        if (HasMethodErrors(context, methodsInInterface))
+        {
+            return null;
+        }
+
         foreach (var methodSymbol in methodsInInterface)
         {
             var eventArgType = GeneratorHelpers.GetEventArgType(methodSymbol);
@@ -168,5 +180,38 @@ public class EventMediatorGenerator
         codeWriter.WriteLine();
 
         return codeWriter.ToString();
+    }
+
+    private static bool HasMethodErrors(SourceProductionContext context, List<IMethodSymbol> methodsInInterface)
+    {
+        var errored = false;
+        
+        var nonVoidMethods = methodsInInterface.Where(x => !x.ReturnsVoid).ToList();
+        
+        if (nonVoidMethods.Any())
+        {
+            foreach (var methodSymbol in nonVoidMethods)
+            {
+                context.ReportDiagnostic(Diagnostic.Create(DiagnosticErrors.InvalidReturnType,
+                    methodSymbol.Locations.FirstOrDefault() ?? Location.None, methodSymbol.Name));
+            }
+
+            errored = true;
+        }
+
+        var methodsMoreThanOneParameter = methodsInInterface.Where(x => x.Parameters.Length > 1).ToList();
+        
+        if (methodsMoreThanOneParameter.Any())
+        {
+            foreach (var methodSymbol in methodsMoreThanOneParameter)
+            {
+                context.ReportDiagnostic(Diagnostic.Create(DiagnosticErrors.InvalidEventArguments,
+                    methodSymbol.Locations.FirstOrDefault() ?? Location.None, methodSymbol.Name));
+            }
+
+            errored = true;
+        }
+        
+        return errored;
     }
 }
