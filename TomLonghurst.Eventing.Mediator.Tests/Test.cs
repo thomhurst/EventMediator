@@ -14,9 +14,11 @@ public class Test
         _textWriter = new StringWriter();
 
         _services = new ServiceCollection()
+            .AddSingleton<SingletonService>()
             .AddEventMediator<IMyEvents>()
-            .AddEventSubscriber<MySubscriber1>()
-            .AddEventSubscriber<MySubscriber2>()
+            .AddEventSubscriber<IMyEvents, MySubscriber1>()
+            .AddEventSubscriber<IMyEvents, MySubscriber2>()
+            .AddEventSubscriber<IMyEvents, TransientSubscriber>()
             .BuildServiceProvider();
 
         Console.SetOut(_textWriter);
@@ -43,28 +45,44 @@ public class Test
         Assert.That(_textWriter.ToString().Trim(), Is.EqualTo("Bar"));
     }
 
+    private int _count;
+    [Repeat(100)]
+    [Test]
+    public void ArgsCounting()
+    {
+        var mediator = _services.GetRequiredService<IMyEvents>();
+
+        mediator.DidSomethingWithArgs(new Args { Foo = (++_count).ToString() });
+
+        Assert.That(_textWriter.ToString().Trim(), Is.EqualTo(_count.ToString()));
+    }
+    
+    [Repeat(100)]
+    [Test]
+    public void CountingWithoutArgs()
+    {
+        var mediator = _services.GetRequiredService<IMyEvents>();
+
+        mediator.DidSomeCounting();
+
+        Assert.That(_textWriter.ToString().Trim(), Is.EqualTo("0"));
+    }
+    
+    private int _serviceCount;
+    [Repeat(100)]
+    [Test]
+    public void ServiceCounting()
+    {
+        var mediator = _services.GetRequiredService<IMyEvents>();
+
+        mediator.DidSomethingWithService();
+
+        Assert.That(_textWriter.ToString().Trim(), Is.EqualTo((++_serviceCount).ToString()));
+    }
+
     [SetUp]
     public void Clear()
     {
         _textWriter.GetStringBuilder().Clear();
-    }
-}
-
-public class MyService
-{
-    private readonly IMyEvents _myEvents;
-
-    public MyService(IMyEvents myEvents)
-    {
-        _myEvents = myEvents;
-    }
-
-    public async Task DoSomething()
-    {
-        // Do Something
-        await Task.Delay(1000);
-        
-        // Publish Event
-        _myEvents.DidSomething();
     }
 }

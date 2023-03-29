@@ -2,7 +2,6 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using TomLonghurst.Eventing.Mediator.SourceGenerator.Attributes;
 
 namespace TomLonghurst.Eventing.Mediator.Extensions;
 
@@ -12,7 +11,7 @@ public static class DependencyInjectionExtensions
     
     public static List<Type> Mediators => _mediators;
 
-    public static IServiceCollection AddEventMediator<TEventMediatorInterface>(this IServiceCollection services)
+    public static IServiceCollection AddEventMediator<TEventMediatorInterface>(this IServiceCollection services) where TEventMediatorInterface : IEventMediator
     {
         if (services.IsReadOnly)
         {
@@ -24,23 +23,20 @@ public static class DependencyInjectionExtensions
             throw new ArgumentException($"{typeof(TEventMediatorInterface).Name} must be an interface");
         }
 
-        if (typeof(TEventMediatorInterface).GetCustomAttribute<EventMediatorAttribute>() == null)
-        {
-            throw new ArgumentException($"{typeof(TEventMediatorInterface).Name} must have the attribute '{nameof(EventMediatorAttribute)}'");
-        }
-
         var mediators = Interlocked.Exchange(ref _mediators, new List<Type>());
         
         foreach (var mediator in mediators)
         {
             var interfaceType = mediator.GetInterfaces().First();
-            services.TryAddSingleton(interfaceType, mediator);
+            services.TryAddTransient(interfaceType, mediator);
         }
 
         return services;
     }
     
-    public static IServiceCollection AddEventSubscriber<TEventSubscriber>(this IServiceCollection services) where TEventSubscriber : class
+    public static IServiceCollection AddEventSubscriber<TEventMediator, TEventSubscriber>(this IServiceCollection services) 
+        where TEventMediator : IEventMediator
+        where TEventSubscriber : class, IEventSubscriber<TEventMediator>
     {
         if (services.IsReadOnly)
         {
@@ -54,12 +50,9 @@ public static class DependencyInjectionExtensions
             throw new ArgumentException($"{subscriberType.Name} must be a class");
         }
 
-        if (subscriberType.GetCustomAttributes().All(x => x.GetType().GetFullNameWithoutGenericArity() != typeof(EventSubscriberAttribute<>).GetFullNameWithoutGenericArity()))
-        {
-            throw new ArgumentException($"{subscriberType.Name} must have the attribute '{nameof(EventSubscriberAttribute<object>)}'");
-        }
-        
-        var interfaces = subscriberType.GetInterfaces();
+        var interfaces = subscriberType.GetInterfaces()
+            .Where(type => !(type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEventSubscriber<>)))
+            .ToArray();
             
         if (interfaces.Length != 1)
         {
@@ -70,7 +63,7 @@ public static class DependencyInjectionExtensions
 
         if (!services.Any(x => x.ServiceType == interfaceType && x.ImplementationType == subscriberType))
         {
-            services.AddSingleton(interfaceType, subscriberType);   
+            services.AddTransient(interfaceType, subscriberType);   
         }
 
         return services;
