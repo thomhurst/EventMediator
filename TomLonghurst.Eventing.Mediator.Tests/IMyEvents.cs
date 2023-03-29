@@ -1,10 +1,12 @@
-﻿using TomLonghurst.Eventing.Mediator.SourceGenerator.Attributes;
+﻿namespace TomLonghurst.Eventing.Mediator.Tests;
 
-namespace TomLonghurst.Eventing.Mediator.Tests;
-
-[EventMediator]
-public interface IMyEvents
+public interface IMyEvents : IEventMediator
 {
     void DidSomething();
+    
     void DidSomethingWithArgs(Args args);
+
+    void DidSomeCounting();
+
+    void DidSomethingWithService();
 }

@@ -12,30 +12,27 @@ Install via Nuget
 
 ## Usage
 
-1.  Create an interface, defining methods that represent events, and add the [EventMediator] attribute
+1.  Create an interface, defining methods that represent events, and add the `IEventMediator` interface
 
 ```csharp
-[EventMediator]
-public interface IMyEvents
+public interface IMyEvents : IEventMediator
 {
     void DidSomething();
     void DidSomethingWithArgs(Args args);
 }
 ```
 
-2.  Create a partial class for your Subscriber, with an `[EventSubscriber<TEventInterface>]` attribute, where `TEventInterface` is the interface you created in step 1
+2.  Create a partial class for your Subscriber, with an `IEventSubscriber<TEventMediator>` interface, where `TEventMediator` is the interface you created in step 1
 
 ```csharp
-[EventSubscriber<IMyEvents>]
-public partial class MySubscriber { }
+public partial class MySubscriber : IEventSubscriber<IMyEvents> { }
 ```
 
 3.  You'll be required by the compiler to implement a `Subscribe` method. Here you'll be passed an object containing `event` hooks that you can choose to opt into or not. Your subscriber may care about all or some. You choose.
     You can inject in any dependencies you want, to this class. The freedom is yours.
 
 ```csharp
-[EventSubscriber<IMyEvents>]
-public partial class MySubscriber
+public partial class MySubscriber : IEventSubscriber<IMyEvents>
 {
     public void Subscribe(IMyEventsEventHandlers eventHandlers)
     {
@@ -54,8 +51,8 @@ public partial class MySubscriber
 ```csharp
 _services
     .AddEventMediator<IMyEvents>()
-    .AddEventSubscriber<MySubscriber1>()
-    .AddEventSubscriber<MySubscriber2>()
+    .AddEventSubscriber<IMyEvents, MySubscriber1>()
+    .AddEventSubscriber<IMyEvents, MySubscriber2>()
 ```
 
 ```csharp
