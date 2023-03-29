@@ -12,12 +12,12 @@ public partial class TransientSubscriber : IEventSubscriber<IMyEvents>
     
     public void Subscribe(IMyEventsEventHandlers eventHandlers)
     {
-        eventHandlers.OnDidSomeCounting += (sender, args) =>
+        eventHandlers.OnDidSomeCounting += (_, _) =>
         {
             Console.WriteLine(_count);
         };
 
-        eventHandlers.OnDidSomethingWithService += (sender, args) =>
+        eventHandlers.OnDidSomethingWithService += (_, _) =>
         {
             Console.WriteLine(_singletonService.Count);
         };
