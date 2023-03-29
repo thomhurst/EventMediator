@@ -75,3 +75,7 @@ public class MyService
     }
 }
 ```
+
+## FAQ
+Q: What Lifetimes do my Publisher/Subscriber classes have?
+A: Transient - They are reconstructed (and the subscribers resubscribe) on each new Mediator injection
